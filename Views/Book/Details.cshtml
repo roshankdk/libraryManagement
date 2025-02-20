@@ -1,0 +1,29 @@
+@model LibraryManagement.Models.Book
+@{
+    ViewData["Title"] = "Book Details";
+}
+
+<h2>Book Details</h2>
+
+<div class="form-group">
+    <label>Title:</label>
+    <p>@Model.Title</p>
+</div>
+<div class="form-group">
+    <label>Author:</label>
+    <p>@Model.Author</p>
+</div>
+<div class="form-group">
+    <label>Genre:</label>
+    <p>@Model.Genre</p>
+</div>
+<div class="form-group">
+    <label>Description:</label>
+    <p>@Model.Description</p>
+</div>
+<div class="form-group">
+    <label>Available:</label>
+    <p>@(Model.IsAvailable ? "Yes" : "No")</p>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>
