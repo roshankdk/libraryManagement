@@ -17,7 +17,7 @@ namespace LibraryManagement.Controllers
         private readonly IMemberRepository _memberRepository;
         private readonly IBorrowService _borrowService;
         private readonly UserManager<ApplicationUser> _userManager;
-        
+
         public AdminController(IBookService bookService, IMemberRepository memberRepository,
             IBorrowService borrowService, UserManager<ApplicationUser> userManager)
         {
@@ -26,7 +26,7 @@ namespace LibraryManagement.Controllers
             _borrowService = borrowService;
             _userManager = userManager;
         }
-        
+
         public async Task<IActionResult> Dashboard()
         {
             var totalBooks = (await _bookService.GetAllBooksAsync()).Count();
@@ -40,13 +40,13 @@ namespace LibraryManagement.Controllers
             };
             return View(model);
         }
-        
+
         public async Task<IActionResult> Members()
         {
             var members = await _memberRepository.GetAllMembersAsync();
             return View(members);
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> AssignRole(string userId, string role)
         {
@@ -57,7 +57,7 @@ namespace LibraryManagement.Controllers
             }
             return RedirectToAction("Members");
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> RemoveRole(string userId, string role)
         {
@@ -68,5 +68,22 @@ namespace LibraryManagement.Controllers
             }
             return RedirectToAction("Members");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var result = await _userManager.DeleteAsync(user);
+                if (!result.Succeeded)
+                {
+                    // Log errors or handle the failure as needed.
+                    // Optionally, add an error message to ModelState or TempData.
+                }
+            }
+            return RedirectToAction("Members");
+        }
+
     }
 }

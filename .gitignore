@@ -51,3 +51,7 @@ publish/
 
 # ASP.NET Razor temporary files
 Generated/
+
+*.db
+*.db-wal
+*.db-shm
