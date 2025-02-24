@@ -55,7 +55,7 @@ LibraryManagementSystem/
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/example/library-management.git
+   git clone https://github.com/roshankdk/library-management.git
    ```
 2. Navigate to the project directory:
    ```sh
