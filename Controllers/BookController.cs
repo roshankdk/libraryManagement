@@ -2,79 +2,102 @@ using LibraryManagement.Models;
 using LibraryManagement.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace LibraryManagement.Controllers
 {
-    [Authorize(Roles = "Admin,Librarian")]
+    [Authorize(Roles = "Admin,Librarian,Member")]
     public class BookController : Controller
     {
         private readonly IBookService _bookService;
-        public BookController(IBookService bookService)
+        private readonly IBorrowService _borrowService;
+
+        public BookController(IBookService bookService, IBorrowService borrowService)
         {
             _bookService = bookService;
+            _borrowService = borrowService;
         }
         
         public async Task<IActionResult> Index()
         {
             var books = await _bookService.GetAllBooksAsync();
-            return View(books);
-        }
-        
-        [HttpGet]
-        public IActionResult Create() => View();
-        
-        [HttpPost]
-        public async Task<IActionResult> Create(Book model)
-        {
-            if(ModelState.IsValid)
+            if (User.IsInRole("Admin") || User.IsInRole("Librarian"))
             {
-                await _bookService.AddBookAsync(model);
+                return View("AdminIndex", books);
+            }
+            else if (User.IsInRole("Member"))
+            {
+                return View("MemberIndex", books);
+            }
+            return Forbid();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin,Librarian")]
+        public IActionResult Create() => View();
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Librarian")]
+        public async Task<IActionResult> Create(Book book)
+        {
+            if (ModelState.IsValid)
+            {
+                await _bookService.AddBookAsync(book);
                 return RedirectToAction(nameof(Index));
             }
-            return View(model);
+            return View(book);
         }
-        
+
         [HttpGet]
+        [Authorize(Roles = "Admin,Librarian")]
         public async Task<IActionResult> Edit(int id)
         {
             var book = await _bookService.GetBookByIdAsync(id);
-            if(book == null)
+            if (book == null)
+            {
                 return NotFound();
+            }
             return View(book);
         }
-        
+
         [HttpPost]
-        public async Task<IActionResult> Edit(Book model)
+        [Authorize(Roles = "Admin,Librarian")]
+        public async Task<IActionResult> Edit(Book book)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                await _bookService.UpdateBookAsync(model);
+                await _bookService.UpdateBookAsync(book);
                 return RedirectToAction(nameof(Index));
             }
-            return View(model);
+            return View(book);
         }
-        
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Librarian")]
         public async Task<IActionResult> Delete(int id)
         {
             await _bookService.DeleteBookAsync(id);
             return RedirectToAction(nameof(Index));
         }
-        
-        public async Task<IActionResult> Details(int id)
-        {
-            var book = await _bookService.GetBookByIdAsync(id);
-            if(book == null)
-                return NotFound();
-            return View(book);
-        }
-        
+
         [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> Search(string searchTerm)
+        [Authorize(Roles = "Member")]
+        public async Task<IActionResult> Borrow(int bookId)
         {
-            var books = await _bookService.SearchBooksAsync(searchTerm);
-            return View("Index", books);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var dueDate = DateTime.Now.AddDays(14); // Example due date set to 14 days from now
+            if (userId == null)
+            {
+                return BadRequest("User ID cannot be null.");
+            }
+
+            var result = await _borrowService.BorrowBookAsync(bookId, userId, dueDate);
+            if (result)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return BadRequest("Unable to borrow the book.");
         }
     }
 }
