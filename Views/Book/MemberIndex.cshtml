@@ -4,33 +4,40 @@
     ViewData["Title"] = "Books (Member)";
 }
 
-<h2>Books (Member)</h2>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Genre</th>
-            <th>Description</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var book in Model)
-        {
-            <tr>
-                <td>@book.Title</td>
-                <td>@book.Author</td>
-                <td>@book.Genre</td>
-                <td>@book.Description</td>
-                <td>
-                    <form asp-action="Borrow" method="post">
-                        <input type="hidden" name="bookId" value="@book.Id" />
-                        <button type="submit" class="btn btn-primary">Borrow</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="container mt-5">
+    <h2 class="mb-4">Books (Member)</h2>
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Genre</th>
+                            <th>Description</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var book in Model)
+                        {
+                            <tr>
+                                <td>@book.Title</td>
+                                <td>@book.Author</td>
+                                <td>@book.Genre</td>
+                                <td>@book.Description</td>
+                                <td class="text-center">
+                                    <form asp-action="Borrow" method="post" class="mb-0">
+                                        <input type="hidden" name="bookId" value="@book.Id" />
+                                        <button type="submit" class="btn btn-primary btn-sm">Borrow</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
