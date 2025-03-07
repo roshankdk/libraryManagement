@@ -26,12 +26,12 @@ namespace LibraryManagement.Data
 
             // Create default admin if not exists
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            string adminEmail = "admin@library.com";
+            string adminEmail = "admin@patshala.com";
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
             if (adminUser == null)
             {
                 adminUser = new ApplicationUser { UserName = adminEmail, Email = adminEmail };
-                var result = await userManager.CreateAsync(adminUser, "Admin123!");
+                var result = await userManager.CreateAsync(adminUser, "Random@123");
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(adminUser, "Admin");
@@ -42,9 +42,10 @@ namespace LibraryManagement.Data
             if (!context.Books.Any())
             {
                 context.Books.AddRange(
-                    new Book { Title = "The Great Gatsby", Author = "F. Scott Fitzgerald", Genre = "Fiction", Description = "A classic novel.", IsAvailable = true },
-                    new Book { Title = "1984", Author = "George Orwell", Genre = "Dystopian", Description = "A dystopian novel.", IsAvailable = true },
-                    new Book { Title = "To Kill a Mockingbird", Author = "Harper Lee", Genre = "Fiction", Description = "A novel about racism and injustice.", IsAvailable = true }
+                    new Book { Title = "The Pragmatic Programmer", Author = "Andrew Hunt", Genre = "Programming", Description = "A guide to becoming a better programmer.", IsAvailable = true },
+                    new Book { Title = "Clean Code", Author = "Robert C. Martin", Genre = "Programming", Description = "A handbook of agile software craftsmanship.", IsAvailable = true },
+                    new Book { Title = "Refactoring", Author = "Martin Fowler", Genre = "Programming", Description = "Improving the design of existing code.", IsAvailable = true },
+                    new Book { Title = "Code Complete", Author = "Steve McConnell", Genre = "Programming", Description = "A practical handbook of software construction.", IsAvailable = true }
                 );
                 await context.SaveChangesAsync();
             }
