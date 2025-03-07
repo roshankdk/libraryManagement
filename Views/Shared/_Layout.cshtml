@@ -5,50 +5,162 @@
     <title>@ViewData["Title"] - Library Management System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <style>
+        .navbar {
+            background-color: #2c3e50 !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 0.8rem 1rem;
+        }
+        
+        .navbar-brand {
+            color: #ffffff !important;
+            font-weight: 600;
+            font-size: 1.4rem;
+            padding: 0.25rem 0;
+        }
+        
+        .navbar-brand i {
+            color: #3498db;
+            margin-right: 8px;
+        }
+        
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.85) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            margin: 0 3px;
+        }
+        
+        .navbar-nav .nav-link:hover, 
+        .navbar-nav .nav-link:focus {
+            color: #ffffff !important;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .navbar-nav .active > .nav-link {
+            color: #ffffff !important;
+            background-color: #3498db;
+        }
+        
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+        
+        .btn-link.nav-link {
+            color: rgba(255, 255, 255, 0.85) !important;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .btn-link.nav-link:hover {
+            color: #ffffff !important;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .auth-buttons .nav-item {
+            margin-left: 5px;
+        }
+        
+        .auth-buttons .nav-link {
+            padding: 0.4rem 1rem;
+        }
+        
+        .login-btn {
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .register-btn {
+            background-color: #3498db;
+        }
+        
+        .register-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Dropdown menu styling */
+        .dropdown-menu {
+            background-color: #34495e;
+            border: none;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+        }
+        
+        .dropdown-item {
+            color: rgba(255, 255, 255, 0.85);
+            padding: 0.5rem 1.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .dropdown-item:hover, 
+        .dropdown-item:focus {
+            color: #ffffff;
+            background-color: #3498db;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/">Library</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav mr-auto">
-                @if (User.Identity != null && User.Identity.IsAuthenticated)
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Book">Books</a>
-                    </li>
-                    @if (User.IsInRole("Member"))
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="fas fa-book"></i> Library</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav mr-auto">
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
-                            <a class="nav-link" href="/Borrow/MyBorrows">My Borrows</a>
+                            <a class="nav-link" href="/Book"><i class="fas fa-book-open mr-1"></i> Books</a>
+                        </li>
+                        @if (User.IsInRole("Member"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Borrow/MyBorrows"><i class="fas fa-bookmark mr-1"></i> My Borrows</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Admin/Dashboard"><i class="fas fa-tachometer-alt mr-1"></i> Admin Dashboard</a>
+                            </li>
+                        }
+                    }
+                </ul>
+                <ul class="navbar-nav ml-auto auth-buttons">
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-user-circle mr-1"></i> @User.Identity.Name
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="/Account/Profile"><i class="fas fa-id-card mr-2"></i> My Profile</a>
+                                <div class="dropdown-divider"></div>
+                                <form asp-controller="Account" asp-action="Logout" method="post">
+                                    <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt mr-2"></i> Logout</button>
+                                </form>
+                            </div>
                         </li>
                     }
-                    @if (User.IsInRole("Admin"))
+                    else
                     {
                         <li class="nav-item">
-                            <a class="nav-link" href="/Admin/Dashboard">Admin Dashboard</a>
+                            <a class="nav-link login-btn" href="/Account/Login"><i class="fas fa-sign-in-alt mr-1"></i> Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link register-btn" href="/Account/Register"><i class="fas fa-user-plus mr-1"></i> Register</a>
                         </li>
                     }
-                }
-            </ul>
-            <ul class="navbar-nav ml-auto">
-                @if (User.Identity != null && User.Identity.IsAuthenticated)
-                {
-                    <li class="nav-item">
-                        <form asp-controller="Account" asp-action="Logout" method="post">
-                            <button type="submit" class="btn btn-link nav-link">Logout</button>
-                        </form>
-                    </li>
-                }
-                else
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Account/Login">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/Account/Register">Register</a>
-                    </li>
-                }
-            </ul>
+                </ul>
+            </div>
         </div>
     </nav>
     <div class="container mt-3">

@@ -2,34 +2,103 @@
 @{
     ViewData["Title"] = "Admin Dashboard";
 }
-<h2>Admin Dashboard</h2>
-<div class="row">
-    <div class="col-md-4">
-        <a href="/Book" class="text-white text-decoration-none">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Total Books</h5>
-                    <p class="card-text">@Model.TotalBooks</p>
+
+<style>
+    .dashboard-card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        min-height: 180px;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+    }
+
+    .card-icon {
+        font-size: 2.5rem;
+        opacity: 0.8;
+        margin-bottom: 1rem;
+    }
+
+    .stat-number {
+        font-size: 2.2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-title {
+        letter-spacing: 0.5px;
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+    }
+</style>
+
+<h2 class="mb-4">Admin Dashboard</h2>
+<div class="row g-4">
+    <div class="col-12 col-md-6 col-lg-4">
+        <a href="/Book" class="text-decoration-none">
+            <div class="card dashboard-card text-white bg-primary-gradient">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <i class="fas fa-book card-icon"></i>
+                    <div class="text-center">
+                        <h5 class="card-title">Total Books</h5>
+                        <div class="stat-number">@Model.TotalBooks</div>
+                    </div>
                 </div>
             </div>
         </a>
     </div>
-    <div class="col-md-4">
-        <a href="/Admin/Members" class="text-white text-decoration-none">
-            <div class="card text-white bg-success mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Total Members</h5>
-                    <p class="card-text">@Model.TotalMembers</p>
+
+    <div class="col-12 col-md-6 col-lg-4">
+        <a href="/Admin/Members" class="text-decoration-none">
+            <div class="card dashboard-card text-white bg-success-gradient">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <i class="fas fa-users card-icon"></i>
+                    <div class="text-center">
+                        <h5 class="card-title">Total Members</h5>
+                        <div class="stat-number">@Model.TotalMembers</div>
+                    </div>
                 </div>
             </div>
         </a>
     </div>
-    <div class="col-md-4">
-        <div class="card text-white bg-danger mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Overdue Books</h5>
-                <p class="card-text">@Model.OverdueCount</p>
+
+    <div class="col-12 col-md-6 col-lg-4">
+        <a href="#" class="text-decoration-none"> <!-- Add proper link for overdue books -->
+            <div class="card dashboard-card text-white bg-danger-gradient">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <i class="fas fa-clock card-icon"></i>
+                    <div class="text-center">
+                        <h5 class="card-title">Overdue Books</h5>
+                        <div class="stat-number">@Model.OverdueCount</div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
 </div>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+    .bg-primary-gradient {
+        background: linear-gradient(135deg, #3f87a6, #2a6074);
+    }
+
+    .bg-success-gradient {
+        background: linear-gradient(135deg, #28a745, #1e7e34);
+    }
+
+    .bg-danger-gradient {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+    }
+
+    .card:hover .card-icon {
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+    }
+</style>
